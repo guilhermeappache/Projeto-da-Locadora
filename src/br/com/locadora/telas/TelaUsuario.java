@@ -57,7 +57,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
     private void adicionar() {
         String sql = "insert into usuario(login, senha, perfil, id) VALUES (?,?,?,?)";
-       
+
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txt_login.getText());
@@ -68,12 +68,12 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
             if (txt_login.getText().isEmpty() || (txt_senha.getText().isEmpty()) || (id_camp.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
-            } else{
-                 
+            } else {
+
                 pst.executeUpdate();
                 // A estrutura abaixo é para confirmar a inserção de dados na tabela
                 int adicionado = pst.executeUpdate();
-                /*System.out.println(adicionado); */ // Essa linha Printa no console o número 1 no caso uma linha que atualizou;
+                /* System.out.println(adicionado); */ // Essa linha Printa no console o número 1 no caso uma linha que atualizou;
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário cadastrado com sucesso");
                     txt_login.setText(null);
@@ -84,57 +84,64 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-    
+
     }
+
     // Abaixo estou criando o metodo para alterar dados dos usuarios;
-    private void alterar(){
+    private void alterar() {
         String sql = "update usuario set login=?, senha=?, perfil=? where id=?";
         try {
             pst = conexao.prepareStatement(sql);
-            pst.setString(1,txt_login.getText());
-            pst.setString(2,txt_senha.getText());
-            pst.setString(3,opc_perfil.getSelectedItem().toString());
-            pst.setString(4,id_camp.getText());
-           if (txt_login.getText().isEmpty() || (txt_senha.getText().isEmpty())) {
-                JOptionPane.showMessageDialog(null,"Algum campo esta vázio");
+            pst.setString(1, txt_login.getText());
+            pst.setString(2, txt_senha.getText());
+            pst.setString(3, opc_perfil.getSelectedItem().toString());
+            pst.setString(4, id_camp.getText());
+            if (txt_login.getText().isEmpty() || (txt_senha.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
             } else {
-               
+
                 pst.executeUpdate();
                 // A estrutura abaixo é para confirmar a alteração de dados na tabela
                 int adicionado = pst.executeUpdate();
                 /*System.out.println(adicionado); */ // Essa linha Printa no console o número 1 no caso uma linha que atualizou;
                 if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null,"Dados alterados com sucesso");
+                    JOptionPane.showMessageDialog(null, "Dados alterados com sucesso");
                     txt_login.setText(null);
                     txt_senha.setText(null);
                     id_camp.setText(null);
-                  
+
                 }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-    
-}
 
-        // metodo que excluí usuários
-    
-        private void excluir(){
-           // antes de excluir ira confirmar a exclusão do usuário
-           int confirma = JOptionPane.showConfirmDialog(null,"Tem certeza que deseja excluír este usuário","Atenção",JOptionPane.YES_NO_OPTION);
-           if (confirma == JOptionPane.YES_OPTION);
-               String upt ="SET SQL_SAFE_UPDATES=0";
-               String sql = "delete from usuario where id=?";
-               try {
-                pst = conexao.prepareStatement(upt);
-                pst = conexao.prepareStatement(sql);
-                pst.setString(1,id_camp.getSelectedText());
-                pst.executeUpdate();
-            } catch (Exception e) {
-                   JOptionPane.showMessageDialog(null, e);
+    }
+
+    // metodo que excluí usuários
+    private void excluir() {
+        // antes de excluir ira confirmar a exclusão do usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluír este usuário", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION);
+        //String upt ="SET SQL_SAFE_UPDATES=0";
+        String sql = "delete  from usuario where ID=?";
+        try {
+            //pst = conexao.prepareStatement(upt);
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, id_camp.getText());
+            int apagado = pst.executeUpdate();
+            if (apagado > 0) {
+                JOptionPane.showMessageDialog(null, "Usuário excluido com sucesso");
+            txt_login.setText(null);
+            txt_senha.setText(null);
+            id_camp.setText(null);
             }
-           
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -292,9 +299,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(bnc_usu_delete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_usu_search, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btc_add_usu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnc_usu_editar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnc_usu_editar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btc_add_usu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(61, 61, 61))
         );
 
@@ -312,13 +318,13 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btc_add_usuActionPerformed
 
     private void btnc_usu_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnc_usu_editarActionPerformed
-            // Aqui chama o metodo alterar
-            alterar();
+        // Aqui chama o metodo alterar
+        alterar();
     }//GEN-LAST:event_btnc_usu_editarActionPerformed
 
     private void bnc_usu_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnc_usu_deleteActionPerformed
-            // Chama o método de excluir
-            excluir();
+        // Chama o método de excluir
+        excluir();
     }//GEN-LAST:event_bnc_usu_deleteActionPerformed
 
 
