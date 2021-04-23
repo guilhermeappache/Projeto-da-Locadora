@@ -113,6 +113,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/locadora/icones/iconfinder_.png"))); // NOI18N
 
         main_cad.setText("Cadastro");
+        main_cad.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                main_cadStateChanged(evt);
+            }
+        });
 
         main_cad_cli.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
         main_cad_cli.setText("Cliente");
@@ -144,6 +149,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         main_cad_filme.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_MASK));
         main_cad_filme.setText("Cadastrar filme");
         main_cad_filme.setEnabled(false);
+        main_cad_filme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                main_cad_filmeActionPerformed(evt);
+            }
+        });
         main_filme.add(main_cad_filme);
 
         main_nova_loc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
@@ -273,6 +283,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
            desktop.add(usuario);
          
     }//GEN-LAST:event_main_cad_usuActionPerformed
+
+    private void main_cadStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_main_cadStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_main_cadStateChanged
+
+    private void main_cad_filmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_cad_filmeActionPerformed
+        // chama a a tela de cadastro de filme.
+        telaCadastroFilme cadfilme = new telaCadastroFilme();
+        cadfilme.setVisible(true);
+        desktop.add(cadfilme);
+    }//GEN-LAST:event_main_cad_filmeActionPerformed
 
     /**
      * @param args the command line arguments
