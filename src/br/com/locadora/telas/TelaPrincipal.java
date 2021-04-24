@@ -251,21 +251,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_main_cad_cliActionPerformed
 
     private void main_nova_locActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_nova_locActionPerformed
-        
+
     }//GEN-LAST:event_main_nova_locActionPerformed
     // Aqui é o metodo para capturar a data do sistema
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-         Date data = new Date();
-         DateFormat formatador =  DateFormat.getDateInstance(DateFormat.SHORT);
-         dat.setText(formatador.format(data));
-         
+        Date data = new Date();
+        DateFormat formatador = DateFormat.getDateInstance(DateFormat.SHORT);
+        dat.setText(formatador.format(data));
+
     }//GEN-LAST:event_formWindowActivated
 
     private void main_sairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_sairActionPerformed
         // Aqui abre a caixa de dialogo para confirmar a saída do programa
         // o If abaixo serve para na caixa de dialgo caso a respota seja SIM, então o sistema sera encerrado.
-        int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que quer sair ?","Atenção",JOptionPane.YES_NO_OPTION);
-        if( sair ==JOptionPane.YES_OPTION){
+        int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que quer sair ?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (sair == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
     }//GEN-LAST:event_main_sairActionPerformed
@@ -277,11 +277,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_ajudaActionPerformed
 
     private void main_cad_usuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_cad_usuActionPerformed
-         // As linhas que seguem irão abrir o form TelaUsuario dentro da area DesktopPane.
-         TelaUsuario usuario = new TelaUsuario();
-           usuario.setVisible  (true);
-           desktop.add(usuario);
-         
+        // As linhas que seguem irão abrir o form TelaUsuario dentro da area DesktopPane.
+        TelaUsuario usuario = new TelaUsuario();
+        usuario.setVisible(true);
+        desktop.add(usuario);
+
     }//GEN-LAST:event_main_cad_usuActionPerformed
 
     private void main_cadStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_main_cadStateChanged
@@ -290,9 +290,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void main_cad_filmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_cad_filmeActionPerformed
         // chama a a tela de cadastro de filme.
-        telaCadastroFilme cadfilme = new telaCadastroFilme();
-        cadfilme.setVisible(true);
-        desktop.add(cadfilme);
+        TelaCadastroFilme filme = new TelaCadastroFilme();
+        filme.setVisible(true);
+        desktop.add(filme);
     }//GEN-LAST:event_main_cad_filmeActionPerformed
 
     /**
