@@ -13,6 +13,7 @@ import br.com.locadora.dal.DvdDao;
 import java.sql.*;
 import br.com.locadora.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+import util.Util;
 
 public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
@@ -92,6 +93,60 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
     }
      */
+    
+    // Metodo adicionar 
+    
+    private void adicionar() {
+        String sql = "insert into dvd_titulo"
+                + "(nom_dvd, cod_genero, dat_cadastro, qtd_cadastrada, censu_dvd)"
+                + "VALUES(?,?,?,?,?)";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1,nomeFilme.getText());
+            pst.setInt(2,obterGeneroDescr(cbGenero.getSelectedItem().toString()));
+            java.util.Date datSis = Util.stringToDate(datCadastro.getText());
+            Date testDat = Util.dataSQL(datSis);
+            pst.setString(3,datCadastro.getText());
+            pst.setString(4,quantidadeFilme.getText());
+            pst.setString(5,cbClass.getSelectedItem().toString());
+            // Validação dos campos;
+
+            if (codFilme.getText().isEmpty() || (nomeFilme.getText().isEmpty()) || (cbGenero.getSelectedItem().toString().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Filme cadastrado com sucesso");
+                    codFilme.setText(null);
+                    nomeFilme.setText(null);
+                    datCadastro.setText(null);
+                    quantidadeFilme.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+     
+    private int obterGeneroDescr(String descri) {
+        String sql = "SELECT * from genero_dvd where descri_genero =?";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1,descri);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+              return Integer.valueOf(rs.getString(1));  
+            } 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+            return 0 ;
+    }
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -123,7 +178,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Nome do Filme");
 
-        jLabel3.setText("Genero");
+        jLabel3.setText("Código do Gênero");
 
         jLabel4.setText("Data de Cadastramento");
 
@@ -140,6 +195,11 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         });
 
         btcCadFil.setText("Cadastrar");
+        btcCadFil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btcCadFilActionPerformed(evt);
+            }
+        });
 
         btnExcluiFil.setText("Excluir");
 
@@ -152,13 +212,13 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
         btnAlteFil.setText("Alterar");
 
-        cbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ação", "Animação", "Aventura", "Comédia", "Drama", "Ficção Cientifíca", "Infantil", "Policial", "Suspense ", "Terror", " " }));
+        cbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ação", "Animação", "Aventura", "Comédia", "Drama", "Ficção ", "Infantil", "Policial", "Suspense ", "Terror", " " }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
@@ -238,6 +298,11 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         // Aqui chama o Método de consultar :
         consultar();
     }//GEN-LAST:event_btnConFilActionPerformed
+
+    private void btcCadFilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btcCadFilActionPerformed
+        // Aqui chama o Método de Adicionar
+        adicionar();
+    }//GEN-LAST:event_btcCadFilActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
