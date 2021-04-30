@@ -12,6 +12,7 @@ package br.com.locadora.telas;
  */
 import java.sql.*;
 import br.com.locadora.dal.ModuloConexao;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import javax.swing.JOptionPane;
 
 public class TelaUsuario extends javax.swing.JInternalFrame {
@@ -27,6 +28,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     public TelaUsuario() {
         initComponents();
         conexao = ModuloConexao.conector();
+       
     }
     // metodo para consultar usuários...
 
@@ -132,9 +134,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             int apagado = pst.executeUpdate();
             if (apagado > 0) {
                 JOptionPane.showMessageDialog(null, "Usuário excluido com sucesso");
-            txt_login.setText(null);
-            txt_senha.setText(null);
-            id_camp.setText(null);
+                txt_login.setText(null);
+                txt_senha.setText(null);
+                id_camp.setText(null);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -343,4 +345,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txt_login;
     private javax.swing.JTextField txt_senha;
     // End of variables declaration//GEN-END:variables
+
+    private void setExtendedState(int MAXIMIZED_BOTH) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

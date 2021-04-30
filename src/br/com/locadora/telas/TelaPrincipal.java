@@ -5,8 +5,11 @@
  */
 package br.com.locadora.telas;
 
+import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -281,6 +284,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         TelaUsuario usuario = new TelaUsuario();
         usuario.setVisible(true);
         desktop.add(usuario);
+        try {
+            usuario.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_main_cad_usuActionPerformed
 
@@ -293,6 +301,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         TelaCadastroFilme filme = new TelaCadastroFilme();
         filme.setVisible(true);
         desktop.add(filme);
+        try {
+            // filme.setMaximum(true): tentativa de abrir a tela maximizada
+            filme.setMaximum(true);
+            // a linha abaixo instancia a tela do cadastro do filme já maximizada.
+            
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_main_cad_filmeActionPerformed
 
     /**
