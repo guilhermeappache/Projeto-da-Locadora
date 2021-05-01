@@ -12,7 +12,7 @@ package br.com.locadora.telas;
  */
 import java.sql.*;
 import br.com.locadora.dal.ModuloConexao;
-import static java.awt.Frame.MAXIMIZED_BOTH;
+
 import javax.swing.JOptionPane;
 
 public class TelaUsuario extends javax.swing.JInternalFrame {
