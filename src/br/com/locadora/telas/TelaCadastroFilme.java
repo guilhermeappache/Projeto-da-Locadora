@@ -12,6 +12,7 @@ package br.com.locadora.telas;
 import br.com.locadora.dal.DvdDao;
 import java.sql.*;
 import br.com.locadora.dal.ModuloConexao;
+import static br.com.locadora.telas.TelaUsuario.id_camp;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.beans.PropertyVetoException;
 import javax.swing.JOptionPane;
@@ -19,7 +20,6 @@ import util.Util;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import net.proteanit.sql.DbUtils;
- 
 
 public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
@@ -36,30 +36,24 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     }
 
     //Metodo para consultar o Filme no Banco de dados
-    public void consultar() {
-        //String sql = "select * from dvd_titulo where cod_dvd=?";
-        String sql = "SELECT dvd.cod_dvd, dvd.nom_dvd, genero.descri_genero, dvd.dat_cadastro, dvd.qtd_cadastrada, dvd.censu_dvd   \n"
-                + " FROM dvd_titulo dvd  \n"
-                + " right JOIN genero_dvd genero ON dvd.cod_genero = genero.cod_genero \n"
-                + " where cod_dvd=?";
-
+    private void consultar() {
+        String sql = "select * from dvd_titulo where cod_dvd=?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, codFilme.getText());
             rs = pst.executeQuery();
             if (rs.next()) {
-                codFilme.setText(rs.getString(1));
                 nomeFilme.setText(rs.getString(2));
-                datCadastro.setText(rs.getString(4));
-                quantidadeFilme.setText(rs.getString(5));
+                cbGenero.setSelectedItem(rs.getString(6));
                 // Abaixo aqui capturo a opções no ComboBox;
-                cbGenero.setSelectedItem(rs.getString(3));
-                cbClass.setSelectedItem(rs.getString(6));
+                datCadastro.setText(rs.getString(3));
+                quantidadeFilme.setText(rs.getString(4));
+                cbClass.setSelectedItem(rs.getString(5));
             } else {
-                JOptionPane.showMessageDialog(null, "Filme não encontrado");
+                JOptionPane.showMessageDialog(null, "Usuário não cadastrado");
                 // Caso haja informações no campo, serão limpas.
-                codFilme.setText(null);
                 nomeFilme.setText(null);
+                cbGenero.setSelectedItem(null);
                 datCadastro.setText(null);
                 quantidadeFilme.setText(null);
                 cbClass.setSelectedItem(null);
@@ -102,20 +96,27 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     // Metodo adicionar 
     private void adicionar() {
         String sql = "insert into dvd_titulo"
-                + "(nom_dvd, cod_genero, dat_cadastro, qtd_cadastrada, censu_dvd)"
+                + "(nom_dvd, genero_filme, qtd_cadastrada, dat_cadastro, censu_dvd)"
                 + "VALUES(?,?,?,?,?)";
 
         try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, nomeFilme.getText());
+            pst.setString(2, cbGenero.getSelectedItem().toString());
+            pst.setString(3, quantidadeFilme.getText());
+            pst.setString(4, datCadastro.getText());
+            pst.setString(5, cbClass.getSelectedItem().toString());
 
+            /*
             pst = conexao.prepareStatement(sql);
             pst.setString(1, nomeFilme.getText());
             pst.setInt(2, obterGeneroDescr(cbGenero.getSelectedItem().toString()));
             pst.setString(3, datCadastro.getText());
             pst.setString(4, quantidadeFilme.getText());
             pst.setString(5, cbClass.getSelectedItem().toString());
+             */
             // Validação dos campos;
-
-            if (codFilme.getText().isEmpty() || (nomeFilme.getText().isEmpty()) || (cbGenero.getSelectedItem().toString().isEmpty())) {
+            if (cbClass.getSelectedItem().toString().isEmpty() || (nomeFilme.getText().isEmpty()) || quantidadeFilme.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
             } else {
                 int adicionado = pst.executeUpdate();
@@ -145,7 +146,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
             pst.setString(1, codFilme.getText());
             int apagado = pst.executeUpdate();
             if (apagado > 0) {
-                JOptionPane.showMessageDialog(null, "Usuário excluido com sucesso");
+                JOptionPane.showMessageDialog(null, "Filme excluido com sucesso");
                 codFilme.setText(null);
                 nomeFilme.setText(null);
                 datCadastro.setText(null);
@@ -158,16 +159,16 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     }
 
     private void alterar() {
-        String sql = "update dvd_titulo set"
-                + "(nom_dvd=?, cod_genero=?, dat_cadastro=?, qtd_cadastrada=?, censu_dvd=? where cod_dvd=?)";
+        String sql;
+        sql = "update dvd_titulo set nom_dvd=?, qtd_cadastrada=?, censu_dvd=?, genero_filme=? where cod_dvd =?";
         try {
 
             pst = conexao.prepareStatement(sql);
             pst.setString(1, nomeFilme.getText());
-            pst.setInt(2, obterGeneroDescr(cbGenero.getSelectedItem().toString()));
-            pst.setString(3, quantidadeFilme.getText());
-            pst.setString(4, cbClass.getSelectedItem().toString());
-            pst.setString(6, codFilme.getText());
+            pst.setString(2, quantidadeFilme.getText());
+            pst.setString(3, cbClass.getSelectedItem().toString());
+            pst.setString(4, cbGenero.getSelectedItem().toString());
+            pst.setString(5, codFilme.getText());
 
             if (codFilme.getText().isEmpty() || (nomeFilme.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
@@ -201,14 +202,15 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         }
         return 0;
     }
+
     // Método para pesquisa avançada
     private void pesquisarCliente() {
-        String sql = "select nom_dvd from dvd_titulo where nom_dvd like ? ";
+        String sql = "select * from dvd_titulo where nom_dvd like ? ";
         try {
             pst = conexao.prepareStatement(sql);
             // passando o conteúdo da caixa de pesquisa nomeFilme para o ? 
             // Atenção ao % - Continuação do comando Sql
-            pst.setString(1,nomeFilme.getText() + "%");
+            pst.setString(1, campPesquisa.getText() + "%");
             rs = pst.executeQuery();
             // A linha usa a biblioteca rs2Xml.jar para preencher a tabela.
             tbFilmes.setModel(DbUtils.resultSetToTableModel(rs));
@@ -233,7 +235,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         codFilme = new javax.swing.JTextField();
         datCadastro = new javax.swing.JTextField();
         quantidadeFilme = new javax.swing.JTextField();
-        nomeFilme = new javax.swing.JTextField();
+        campPesquisa = new javax.swing.JTextField();
         btcCadFil = new javax.swing.JButton();
         btnExcluiFil = new javax.swing.JButton();
         btnConFil = new javax.swing.JButton();
@@ -241,6 +243,9 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         cbGenero = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbFilmes = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        nomeFilme = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -264,9 +269,9 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Código ");
 
-        jLabel3.setText("Código do Gênero");
+        jLabel3.setText("Gênero");
 
-        jLabel4.setText("Data de Cadastramento");
+        jLabel4.setText("Dat. Cadastro");
 
         jLabel5.setText("Quantidade");
 
@@ -280,14 +285,14 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
             }
         });
 
-        nomeFilme.addActionListener(new java.awt.event.ActionListener() {
+        campPesquisa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nomeFilmeActionPerformed(evt);
+                campPesquisaActionPerformed(evt);
             }
         });
-        nomeFilme.addKeyListener(new java.awt.event.KeyAdapter() {
+        campPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                nomeFilmeKeyReleased(evt);
+                campPesquisaKeyReleased(evt);
             }
         });
 
@@ -323,16 +328,23 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
         tbFilmes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2", "Title 3", "Title 4", "Título 5", "Título 6"
             }
         ));
         jScrollPane2.setViewportView(tbFilmes);
+
+        jLabel2.setText("Título");
+
+        jLabel7.setText("Pesquisar por Título");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -340,84 +352,100 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(datCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(quantidadeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(codFilme, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(codFilme, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cbClass, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(campPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(82, 82, 82)))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btcCadFil)
-                            .addComponent(btnExcluiFil, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAlteFil, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(39, 39, 39))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(btnConFil)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(64, 64, 64)
+                                .addComponent(nomeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(datCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nomeFilme)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnConFil)
-                        .addGap(41, 41, 41))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(10, 10, 10)
+                                .addComponent(cbClass, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(quantidadeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnAlteFil, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnExcluiFil, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nomeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnConFil))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(124, 124, 124)
                         .addComponent(btcCadFil)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(99, 99, 99)
-                                .addComponent(btnExcluiFil))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(btnAlteFil))))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(campPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConFil)
+                            .addComponent(codFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel7))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAlteFil)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(nomeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(codFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(datCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(quantidadeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(cbClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(25, 25, 25))
+                        .addGap(52, 52, 52)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(quantidadeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3))
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel6)
+                                    .addComponent(cbClass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnExcluiFil)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel4)
+                                .addComponent(datCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(379, 379, 379))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cbClass, cbGenero, codFilme, datCadastro, jLabel1, jLabel3, jLabel4, jLabel5, jLabel6, nomeFilme, quantidadeFilme});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {campPesquisa, cbClass, cbGenero, codFilme, datCadastro, jLabel1, jLabel3, jLabel4, jLabel5, jLabel6, quantidadeFilme});
 
         setBounds(0, 0, 739, 475);
     }// </editor-fold>//GEN-END:initComponents
@@ -446,14 +474,14 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         alterar();
     }//GEN-LAST:event_btnAlteFilActionPerformed
 
-    private void nomeFilmeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nomeFilmeKeyReleased
+    private void campPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campPesquisaKeyReleased
         // O evento é dó tipo " Enquanto for digitando faça em tempo real "
         pesquisarCliente();
-    }//GEN-LAST:event_nomeFilmeKeyReleased
+    }//GEN-LAST:event_campPesquisaKeyReleased
 
-    private void nomeFilmeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeFilmeActionPerformed
+    private void campPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campPesquisaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nomeFilmeActionPerformed
+    }//GEN-LAST:event_campPesquisaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -461,15 +489,18 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnAlteFil;
     private javax.swing.JButton btnConFil;
     private javax.swing.JButton btnExcluiFil;
+    private javax.swing.JTextField campPesquisa;
     private javax.swing.JComboBox<String> cbClass;
-    private javax.swing.JComboBox<String> cbGenero;
+    protected javax.swing.JComboBox<String> cbGenero;
     private javax.swing.JTextField codFilme;
     private javax.swing.JTextField datCadastro;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
