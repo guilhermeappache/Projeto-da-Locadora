@@ -220,6 +220,17 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
     }
 
+    public void setarCampo() {
+        int setar = tbFilmes.getSelectedRow();
+        
+        nomeFilme.setText(tbFilmes.getModel().getValueAt(setar, 1).toString());
+        datCadastro.setText(tbFilmes.getModel().getValueAt(setar, 2).toString());
+        cbClass.setSelectedItem((tbFilmes.getModel().getValueAt(setar, 4).toString()));
+        cbGenero.setSelectedItem((tbFilmes.getModel().getValueAt(setar, 5).toString()));
+        quantidadeFilme.setText(tbFilmes.getModel().getValueAt(setar, 3).toString());
+
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -340,6 +351,11 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Título 5", "Título 6"
             }
         ));
+        tbFilmes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbFilmesMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tbFilmes);
 
         jLabel2.setText("Título");
@@ -482,6 +498,11 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     private void campPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campPesquisaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_campPesquisaActionPerformed
+
+    private void tbFilmesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbFilmesMouseClicked
+        // Aqui ao clicar na tabela os campos são automaticamente colocados.
+        setarCampo();
+    }//GEN-LAST:event_tbFilmesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
