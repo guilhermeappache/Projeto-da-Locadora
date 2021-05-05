@@ -153,13 +153,11 @@
                   </Group>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnAlteFil" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="3" groupAlignment="3" attributes="0">
-                          <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="nomeFilme" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                      <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="nomeFilme" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="btnAlteFil" min="-2" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
@@ -233,6 +231,9 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="codFilme">
+      <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="datCadastro">
       <Events>
@@ -362,6 +363,9 @@
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tbFilmesMouseClicked"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="TelaCadastroFilme_tbFilmes"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

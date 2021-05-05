@@ -170,7 +170,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
             pst.setString(4, cbGenero.getSelectedItem().toString());
             pst.setString(5, codFilme.getText());
 
-            if (codFilme.getText().isEmpty() || (nomeFilme.getText().isEmpty())) {
+            if (nomeFilme.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
             } else {
                 pst.executeUpdate();
@@ -179,7 +179,13 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
                 /* System.out.println(adicionado);*/ // // Essa linha Printa no console o número 1 no caso uma linha que atualizou;
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados alterados com sucesso");
-
+                    codFilme.setText(null);
+                    nomeFilme.setText(null);
+                    datCadastro.setText(null);
+                    cbClass.setSelectedItem(null);
+                    cbGenero.setSelectedItem(null);
+                    quantidadeFilme.setText(null);
+                    btcCadFil.setEnabled(true);
                 }
             }
         } catch (Exception e) {
@@ -222,13 +228,13 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
     public void setarCampo() {
         int setar = tbFilmes.getSelectedRow();
-        
+        codFilme.setText(tbFilmes.getModel().getValueAt(setar, 0).toString());
         nomeFilme.setText(tbFilmes.getModel().getValueAt(setar, 1).toString());
         datCadastro.setText(tbFilmes.getModel().getValueAt(setar, 2).toString());
         cbClass.setSelectedItem((tbFilmes.getModel().getValueAt(setar, 4).toString()));
         cbGenero.setSelectedItem((tbFilmes.getModel().getValueAt(setar, 5).toString()));
         quantidadeFilme.setText(tbFilmes.getModel().getValueAt(setar, 3).toString());
-
+        btcCadFil.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -289,6 +295,8 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
         jLabel6.setText("Classificação");
 
         cbClass.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Livre", "10 Anos", "12 Anos", "14 Anos", "16 Anos", "18 Anos" }));
+
+        codFilme.setEnabled(false);
 
         datCadastro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -437,10 +445,9 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
                         .addGap(27, 27, 27)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnAlteFil)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(nomeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel2)
+                        .addComponent(nomeFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAlteFil)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)

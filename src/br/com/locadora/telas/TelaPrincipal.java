@@ -242,7 +242,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void main_cad_cliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_cad_cliActionPerformed
-        // TODO add your handling code here:
+        // Aqui chama A tela de Cadastro de Cliente
+        TelaCadCliente cadastro = new TelaCadCliente();
+        cadastro.setVisible(true);
+        desktop.add(cadastro);
+        try {
+            // a linha abaixo instancia a tela do cadastro do cliente já maximizada.
+            cadastro.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }//GEN-LAST:event_main_cad_cliActionPerformed
 
     private void main_nova_locActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_nova_locActionPerformed
@@ -297,7 +307,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             // filme.setMaximum(true): tentativa de abrir a tela maximizada
             filme.setMaximum(true);
             // a linha abaixo instancia a tela do cadastro do filme já maximizada.
-            
+
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -332,7 +342,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-          
+
             public void run() {
                 new TelaPrincipal().setVisible(true);
             }
