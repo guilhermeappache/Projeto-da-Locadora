@@ -210,7 +210,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
     }
 
     // Método para pesquisa avançada
-    private void pesquisarCliente() {
+    private void pesquisarDvd() {
         String sql = "select * from dvd_titulo where nom_dvd like ? ";
         try {
             pst = conexao.prepareStatement(sql);
@@ -499,7 +499,7 @@ public class TelaCadastroFilme extends javax.swing.JInternalFrame {
 
     private void campPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campPesquisaKeyReleased
         // O evento é dó tipo " Enquanto for digitando faça em tempo real "
-        pesquisarCliente();
+        pesquisarDvd();
     }//GEN-LAST:event_campPesquisaKeyReleased
 
     private void campPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campPesquisaActionPerformed
