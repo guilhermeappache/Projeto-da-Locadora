@@ -50,7 +50,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menu = new javax.swing.JMenuBar();
         main_cad = new javax.swing.JMenu();
         main_cad_cli = new javax.swing.JMenuItem();
-        main_cad_depen = new javax.swing.JMenuItem();
         main_cad_usu = new javax.swing.JMenuItem();
         main_filme = new javax.swing.JMenu();
         main_cad_filme = new javax.swing.JMenuItem();
@@ -129,10 +128,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         main_cad.add(main_cad_cli);
-
-        main_cad_depen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.ALT_MASK));
-        main_cad_depen.setText("Dependente");
-        main_cad.add(main_cad_depen);
 
         main_cad_usu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK));
         main_cad_usu.setText("Usuário");
@@ -215,9 +210,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(2348, 2348, 2348)
                         .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, 0)
-                        .addComponent(jLabel7)))
+                    .addComponent(jLabel7))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -365,7 +358,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JLabel lblUsu;
     private javax.swing.JMenu main_cad;
     private javax.swing.JMenuItem main_cad_cli;
-    private javax.swing.JMenuItem main_cad_depen;
     public static javax.swing.JMenuItem main_cad_filme;
     public static javax.swing.JMenuItem main_cad_usu;
     private javax.swing.JMenu main_filme;

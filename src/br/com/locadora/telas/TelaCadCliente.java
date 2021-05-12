@@ -100,10 +100,25 @@ public class TelaCadCliente extends javax.swing.JInternalFrame {
         });
 
         btnCadastrar.setText("Cadastrar");
+        btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastrarActionPerformed(evt);
+            }
+        });
 
         btnAlterar.setText("Alterar");
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         pesCli.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -231,6 +246,21 @@ public class TelaCadCliente extends javax.swing.JInternalFrame {
         pesquisarCliente();
     }//GEN-LAST:event_pesCliKeyReleased
 
+    private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
+        // aqui aciona o metodo adicionar
+        adicionar();
+    }//GEN-LAST:event_btnCadastrarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // aqui chama o metodo excluir
+        excluir();
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        // Aqui chama o metodo de alterar
+        alterar();
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
     private void consultar() {
         String sql = "select * from cliente where cod_cli = ?";
         try {
@@ -286,6 +316,103 @@ public class TelaCadCliente extends javax.swing.JInternalFrame {
         endCli.setText(cliTable.getModel().getValueAt(setar, 4).toString());
         datNasci.setText(cliTable.getModel().getValueAt(setar, 5).toString());
         datCadas.setText(cliTable.getModel().getValueAt(setar, 6).toString());
+    }
+
+    private void adicionar() {
+        String sql = "insert into cliente (cpf_cli, nom_cli, fone_cli, end_cli, dat_nasci_cli, dat_cadastro)"
+                + "VALUES(?,?,?,?,?,?)";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, cpfCli.getText());
+            pst.setString(2, nomeCli.getText());
+            pst.setString(3, telCli.getText());
+            pst.setString(4, endCli.getText());
+            pst.setString(5, datNasci.getText());
+            pst.setString(6, datCadas.getText());
+
+            // Validação dos campos;
+            if (cpfCli.getText().isEmpty() || (nomeCli.getText().isEmpty()) || telCli.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente  cadastrado com sucesso");
+                    codCli.setText(null);
+                    cpfCli.setText(null);
+                    nomeCli.setText(null);
+                    telCli.setText(null);
+                    endCli.setText(null);
+                    datNasci.setText(null);
+                    datCadas.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+    private void excluir() {
+        // antes de excluir ira confirmar a exclusão do usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluír este usuário", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION);
+        //String upt ="SET SQL_SAFE_UPDATES=0";
+        String sql = "delete  from cliente where cod_cli=?";
+        try {
+            //pst = conexao.prepareStatement(upt);
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, codCli.getText());
+            int apagado = pst.executeUpdate();
+            if (apagado > 0) {
+                JOptionPane.showMessageDialog(null, "Filme excluido com sucesso");
+                codCli.setText(null);
+                cpfCli.setText(null);
+                nomeCli.setText(null);
+                telCli.setText(null);
+                endCli.setText(null);
+                datNasci.setText(null);
+                datCadas.setText(null);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+    private void alterar() {
+        String sql;
+        sql = "update cliente  set nom_cli=?, fone_cli=?, end_cli=? where cod_cli= ?";
+        try {
+
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, nomeCli.getText());
+            pst.setString(2, telCli.getText());
+            pst.setString(3, endCli.getText());
+            pst.setString(4,codCli.getText());
+
+            if (cpfCli.getText().isEmpty() || (nomeCli.getText().isEmpty()) || telCli.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Algum campo esta vázio");
+            } else {
+                pst.executeUpdate();
+                // A estrutura abaixo é para confirmar a alteração de dados na tabela
+                int adicionado = pst.executeUpdate();
+                /* System.out.println(adicionado);*/ // // Essa linha Printa no console o número 1 no caso uma linha que atualizou;
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Dados alterados com sucesso");
+                    codCli.setText(null);
+                    cpfCli.setText(null);
+                    nomeCli.setText(null);
+                    telCli.setText(null);
+                    endCli.setText(null);
+                    datNasci.setText(null);
+                    datCadas.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlterar;
