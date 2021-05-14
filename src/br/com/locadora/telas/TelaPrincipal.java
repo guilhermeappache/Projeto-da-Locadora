@@ -249,7 +249,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_main_cad_cliActionPerformed
 
     private void main_nova_locActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_nova_locActionPerformed
+        TelaNovaLocacao loc = new TelaNovaLocacao();
+        loc.setVisible(true);
+        desktop.add(loc);
+          try {
+            
+            loc.setMaximum(true);
+            // a linha abaixo instancia a tela do cadastro do filme já maximizada.
 
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     
     }//GEN-LAST:event_main_nova_locActionPerformed
     // Aqui é o metodo para capturar a data do sistema
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
